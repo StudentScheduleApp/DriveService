@@ -21,7 +21,7 @@ public class ImageController {
     private FileService fileService;
 
     @PostMapping("upload")
-    public ResponseEntity<String> upload(@RequestParam("image") MultipartFile file) {
+    public ResponseEntity<String> upload(@RequestBody Byte[] file) {
         if (file == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         String name = "";

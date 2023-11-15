@@ -1,14 +1,13 @@
 package com.studentscheduleapp.driveservice.services;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 
 @Service
 public class FileService {
-    public String create(MultipartFile file) throws IOException {
+    public String create(Byte[] file) throws IOException {
         return null;
     }
 
