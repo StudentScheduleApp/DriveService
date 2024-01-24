@@ -2,26 +2,24 @@ package com.studentscheduleapp.driveservice.api;
 
 import com.studentscheduleapp.driveservice.services.FileService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
 @RestController
 @RequiredArgsConstructor
-public class ImageController {
+public class DriveController {
 
     @Autowired
     private FileService fileService;
 
     @PostMapping("${mapping.upload}")
-    public ResponseEntity<String> upload(@RequestParam("image") MultipartFile file) {
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
             Logger.getGlobal().info("bad request: image is null or empty");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

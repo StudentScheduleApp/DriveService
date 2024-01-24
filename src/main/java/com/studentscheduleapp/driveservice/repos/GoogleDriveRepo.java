@@ -15,7 +15,10 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.Permission;
+import com.studentscheduleapp.driveservice.properties.GoogleDriveProperties;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,13 +30,13 @@ import java.util.List;
 /* class to demonstrate use of Drive files list API */
 @Repository
 public class GoogleDriveRepo {
-    private static final String APPLICATION_NAME = "StudentScheduleApp";
-    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    @Value("${google.drive.token.path}")
-    private String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    @Autowired
+    private GoogleDriveProperties googleDriveProperties;
+    private final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+    private final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
+    private final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
+            throws IOException {
         // Load client secrets.
         InputStream in = GoogleDriveRepo.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
@@ -45,14 +48,14 @@ public class GoogleDriveRepo {
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(googleDriveProperties.getTokensPath())))
                 .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-        //returns an authorized Credential object.
-        return credential;
+        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
+
+
     public String create(MultipartFile fileContent) throws IOException {
         java.io.File f = new java.io.File("temp");
         FileUtils.writeByteArrayToFile(f, fileContent.getBytes());
@@ -63,9 +66,15 @@ public class GoogleDriveRepo {
         try {
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                    .setApplicationName(APPLICATION_NAME)
+                    .setApplicationName(googleDriveProperties.getAppName())
                     .build();
-            return service.files().create(file, mediaContent).setFields("id").execute().getId();
+            String id = service.files().create(file, mediaContent).setFields("id").execute().getId();
+            Permission newPermission = new Permission();
+            newPermission.setType("anyone");
+            newPermission.setRole("reader");
+            service.permissions().create(id, newPermission).execute();
+            f.delete();
+            return String.format("https://drive.usercontent.google.com/uc?id=%s&export=download", id);
         } catch (GeneralSecurityException e){
             throw new IOException(e);
         }
@@ -74,7 +83,7 @@ public class GoogleDriveRepo {
         try {
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                    .setApplicationName(APPLICATION_NAME)
+                    .setApplicationName(googleDriveProperties.getAppName())
                     .build();
             service.files().delete(name).execute();
             return true;
