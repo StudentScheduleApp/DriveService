@@ -21,7 +21,7 @@ public class ImageController {
     @Autowired
     private FileService fileService;
 
-    @PostMapping("upload")
+    @PostMapping("${mapping.upload}")
     public ResponseEntity<String> upload(@RequestBody Byte[] file) {
         if (file == null || file.length == 0) {
             Logger.getGlobal().info("bad request: file is null or empty");
@@ -41,7 +41,7 @@ public class ImageController {
         return ResponseEntity.ok(name);
     }
 
-    @GetMapping("{name}")
+    @GetMapping("${mapping.delete}/{name}")
     public ResponseEntity<Byte[]> download(@PathVariable("name") String name){
         File f = null;
         try {
