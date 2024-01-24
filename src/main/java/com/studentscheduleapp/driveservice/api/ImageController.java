@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/")
 @RequiredArgsConstructor
 public class ImageController {
 
