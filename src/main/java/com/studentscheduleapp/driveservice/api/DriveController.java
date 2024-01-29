@@ -28,6 +28,7 @@ public class DriveController {
         try {
             name = fileService.create(file);
         } catch (NullPointerException e){
+            e.printStackTrace();
             Logger.getGlobal().info("bad request: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
@@ -42,6 +43,7 @@ public class DriveController {
         try {
             fileService.delete(name);
         } catch (IOException e) {
+            e.printStackTrace();
             Logger.getGlobal().info("delete failed:" + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
