@@ -81,14 +81,13 @@ public class GoogleDriveRepo {
             throw new IOException(e);
         }
     }
-    public boolean delete(String name) throws IOException {
+    public void delete(String name) throws IOException {
         try {
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                     .setApplicationName(googleDriveProperties.getAppName())
                     .build();
             service.files().delete(name).execute();
-            return true;
         } catch (GeneralSecurityException e){
             throw new IOException(e);
         }

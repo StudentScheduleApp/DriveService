@@ -15,7 +15,7 @@ public class FileService {
         return googleDriveRepo.create(file);
     }
 
-    public boolean delete(String name) throws IOException {
-        return googleDriveRepo.delete(name);
+    public void delete(String name) throws IOException {
+        googleDriveRepo.delete(name);
     }
 }
