@@ -46,7 +46,6 @@ public class ServiceTokenFilter extends GenericFilterBean {
             else
                 logger.warn("authorize service failed: invalid token " + token);
         } catch (Exception e) {
-            e.getStackTrace();
             StringWriter errors = new StringWriter();
             e.printStackTrace(new PrintWriter(errors));
             logger.error("authorize service failed: " + errors);

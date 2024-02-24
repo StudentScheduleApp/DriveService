@@ -2,7 +2,6 @@ package com.studentscheduleapp.driveservice.services;
 
 import com.studentscheduleapp.driveservice.properties.GlobalProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service

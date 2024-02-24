@@ -29,17 +29,15 @@ public class DriveController {
             log.warn("bad request: image is null or empty");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        String name = "";
+        String name;
         try {
             name = fileService.create(file);
         } catch (NullPointerException e){
-            e.getStackTrace();
             StringWriter errors = new StringWriter();
             e.printStackTrace(new PrintWriter(errors));
             log.warn("bad request: " + errors);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
-            e.getStackTrace();
             StringWriter errors = new StringWriter();
             e.printStackTrace(new PrintWriter(errors));
             log.error("upload failed:" + errors);
@@ -53,7 +51,6 @@ public class DriveController {
         try {
             fileService.delete(name);
         } catch (IOException e) {
-            e.getStackTrace();
             StringWriter errors = new StringWriter();
             e.printStackTrace(new PrintWriter(errors));
             log.error("delete failed:" + errors);
