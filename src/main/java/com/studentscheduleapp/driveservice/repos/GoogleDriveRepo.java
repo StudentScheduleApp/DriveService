@@ -32,11 +32,12 @@ import java.util.List;
 /* class to demonstrate use of Drive files list API */
 @Repository
 public class GoogleDriveRepo {
-    @Autowired
-    private GoogleDriveProperties googleDriveProperties;
     private final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
     private final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    @Autowired
+    private GoogleDriveProperties googleDriveProperties;
+
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
         // Load client secrets.
@@ -77,10 +78,11 @@ public class GoogleDriveRepo {
             service.permissions().create(id, newPermission).execute();
             f.delete();
             return String.format("https://drive.usercontent.google.com/uc?id=%s&export=download", id);
-        } catch (GeneralSecurityException e){
+        } catch (GeneralSecurityException e) {
             throw new IOException(e);
         }
     }
+
     public void delete(String name) throws IOException {
         try {
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -88,7 +90,7 @@ public class GoogleDriveRepo {
                     .setApplicationName(googleDriveProperties.getAppName())
                     .build();
             service.files().delete(name).execute();
-        } catch (GeneralSecurityException e){
+        } catch (GeneralSecurityException e) {
             throw new IOException(e);
         }
     }

@@ -18,10 +18,9 @@ import java.io.StringWriter;
 @RequiredArgsConstructor
 public class DriveController {
 
+    private static final Logger log = LogManager.getLogger(DriveController.class);
     @Autowired
     private FileService fileService;
-    private static final Logger log = LogManager.getLogger(DriveController.class);
-
 
     @PostMapping("${mapping.upload}")
     public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
@@ -32,7 +31,7 @@ public class DriveController {
         String name;
         try {
             name = fileService.create(file);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             StringWriter errors = new StringWriter();
             e.printStackTrace(new PrintWriter(errors));
             log.warn("bad request: " + errors);
@@ -46,8 +45,9 @@ public class DriveController {
         log.info("file " + name + " saved");
         return ResponseEntity.ok(name);
     }
+
     @DeleteMapping("${mapping.delete}/{name}")
-    public ResponseEntity<Void> delete(@PathVariable("name") String name){
+    public ResponseEntity<Void> delete(@PathVariable("name") String name) {
         try {
             fileService.delete(name);
         } catch (IOException e) {
