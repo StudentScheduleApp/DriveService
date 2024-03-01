@@ -7,17 +7,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -49,7 +53,12 @@ public class ServiceTokenFilter extends GenericFilterBean {
             e.printStackTrace(new PrintWriter(errors));
             logger.error("authorize service failed: " + errors);
         }
-        fc.doFilter(request, response);
+        try {
+            fc.doFilter(request, response);
+        } catch (Exception e) {
+            logger.error("request failed: " + e.getMessage());
+            ((HttpServletResponse) response).setStatus(400);
+        }
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
