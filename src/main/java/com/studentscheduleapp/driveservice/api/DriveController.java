@@ -56,7 +56,7 @@ public class DriveController {
             fileService.delete(name);
         } catch (IOException e) {
             if (e.getMessage().contains("404")){
-                log.error("delete failed: file " + url + " not found");
+                log.warn("delete failed: file " + url + " not found");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             StringWriter errors = new StringWriter();
