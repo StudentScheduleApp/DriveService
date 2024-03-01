@@ -1,6 +1,7 @@
 package com.studentscheduleapp.driveservice.api;
 
 import com.studentscheduleapp.driveservice.services.FileService;
+import com.studentscheduleapp.driveservice.services.UrlService;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -21,6 +22,8 @@ public class DriveController {
     private static final Logger log = LogManager.getLogger(DriveController.class);
     @Autowired
     private FileService fileService;
+    @Autowired
+    private UrlService urlService;
 
     @PostMapping("${mapping.upload}")
     public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
@@ -46,11 +49,16 @@ public class DriveController {
         return ResponseEntity.ok(name);
     }
 
-    @DeleteMapping("${mapping.delete}/{name}")
-    public ResponseEntity<Void> delete(@PathVariable("name") String name) {
+    @DeleteMapping("${mapping.delete}")
+    public ResponseEntity<Void> delete(@RequestParam("downloadUrl") String url) {
+        String name = urlService.getNameFromImageUrl(url);
         try {
             fileService.delete(name);
         } catch (IOException e) {
+            if (e.getMessage().contains("404")){
+                log.error("delete failed: file " + url + " not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
             StringWriter errors = new StringWriter();
             e.printStackTrace(new PrintWriter(errors));
             log.error("delete failed:" + errors);
