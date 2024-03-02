@@ -54,7 +54,7 @@ public class DriveController {
         String name = urlService.getNameFromImageUrl(url);
         try {
             fileService.delete(name);
-        } catch (IOException e) {
+        } catch (Exception e) {
             if (e.getMessage().contains("404")){
                 log.warn("delete failed: file " + url + " not found");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
