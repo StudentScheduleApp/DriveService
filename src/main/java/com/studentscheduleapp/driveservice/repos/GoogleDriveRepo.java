@@ -60,7 +60,7 @@ public class GoogleDriveRepo {
 
 
     public String create(MultipartFile fileContent) throws IOException {
-        java.io.File f = new java.io.File("temp");
+        java.io.File f = new java.io.File(String.valueOf(Math.round(Math.random() * 100000000)));
         FileUtils.writeByteArrayToFile(f, fileContent.getBytes());
         FileContent mediaContent = new FileContent(fileContent.getContentType(), f);
         File file = new File();
