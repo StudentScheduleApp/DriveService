@@ -79,6 +79,7 @@ public class GoogleDriveRepo {
             f.delete();
             return String.format("https://drive.usercontent.google.com/uc?id=%s&export=download", id);
         } catch (GeneralSecurityException e) {
+            f.delete();
             throw new IOException(e);
         }
     }
