@@ -14,12 +14,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -35,7 +33,7 @@ public class ServiceTokenFilter extends GenericFilterBean {
     private AuthorizeServiceService authorizeServiceService;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc) {
         final String token = getTokenFromRequest((HttpServletRequest) request);
         try {
             if (token != null && authorizeServiceService.authorize(token)) {

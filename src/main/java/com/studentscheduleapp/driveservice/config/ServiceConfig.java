@@ -20,12 +20,12 @@ public class ServiceConfig {
         restTemplate.setInterceptors(Collections.singletonList(headerRequestInterceptor()));
         restTemplate.setErrorHandler(new ResponseErrorHandler() {
             @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
+            public boolean hasError(ClientHttpResponse response) {
                 return false;
             }
 
             @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
+            public void handleError(ClientHttpResponse response) {
 
             }
         });
