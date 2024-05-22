@@ -31,7 +31,7 @@ import java.util.List;
 
 /* class to demonstrate use of Drive files list API */
 @Repository
-public class GoogleDriveRepo {
+public class GoogleDriveRepo implements DriveRepo {
     private final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
     private final String CREDENTIALS_FILE_PATH = "/credentials.json";
@@ -58,9 +58,9 @@ public class GoogleDriveRepo {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-
+    @Override
     public String create(MultipartFile fileContent) throws IOException {
-        java.io.File f = new java.io.File(String.valueOf(Math.round(Math.random() * 100000000)));
+        java.io.File f = new java.io.File(String.valueOf(System.currentTimeMillis()));
         FileUtils.writeByteArrayToFile(f, fileContent.getBytes());
         FileContent mediaContent = new FileContent(fileContent.getContentType(), f);
         File file = new File();
@@ -84,6 +84,7 @@ public class GoogleDriveRepo {
         }
     }
 
+    @Override
     public void delete(String name) throws IOException {
         try {
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();

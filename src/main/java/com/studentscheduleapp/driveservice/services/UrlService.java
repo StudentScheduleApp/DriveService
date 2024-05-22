@@ -7,7 +7,7 @@ public class UrlService {
 
     public String getNameFromImageUrl(String url) {
         try {
-            return url.substring(43, url.length() - 16);
+            return url.split("/")[url.split("/").length-1];//url.substring(43, url.length() - 16);
         } catch (Exception e) {
             return "";
         }

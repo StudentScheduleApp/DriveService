@@ -18,8 +18,8 @@ public class FileConfig {
     @Bean
     MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize(DataSize.ofBytes(globalProperties.getMaxImageSize()));
-        factory.setMaxRequestSize(DataSize.ofBytes(globalProperties.getMaxImageSize()));
+        factory.setMaxFileSize(DataSize.ofBytes(globalProperties.getMaxFileSize()));
+        factory.setMaxRequestSize(DataSize.ofBytes(globalProperties.getMaxFileSize()));
         return factory.createMultipartConfig();
     }
 
